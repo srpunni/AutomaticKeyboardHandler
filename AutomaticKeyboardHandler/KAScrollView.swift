@@ -342,7 +342,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         firstResponder = textField
     }
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+    public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         if textFieldDelegate != nil {
             if textFieldDelegate.responds(to: Selector(("textFieldShouldEndEditing")))
             {
@@ -352,7 +352,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         return true
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let nextField = self.nextField(currentTextField: textField)
         nextField?.becomeFirstResponder()
         if nextField == nil {
@@ -371,18 +371,18 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         return true
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    public func textFieldDidEndEditing(_ textField: UITextField) {
         if textFieldDelegate != nil && textFieldDelegate.responds(to: #selector(textFieldDidEndEditing(_:))) {
             textFieldDelegate.textFieldDidEndEditing!(textField)
         }
     }
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+    public func textFieldShouldClear(_ textField: UITextField) -> Bool {
         if textFieldDelegate != nil && textFieldDelegate.responds(to: #selector(textFieldShouldClear(_:))) {
             return textFieldDelegate.textFieldShouldClear!(textField)
         }
         return true
     }
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+    public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
         if textFieldDelegate != nil && textFieldDelegate.responds(to: #selector(textFieldDidEndEditing(_:reason:))) {
             textFieldDelegate.textFieldDidEndEditing!(textField, reason: reason)
         }
@@ -392,42 +392,42 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     /*--------------------------------------------------------------------------------------------------------------
      * UITextFieldDelegate methods
      *------------------------------------------------------------------------------------------------------------*/
-    func textViewDidBeginEditing(_ textView: UITextView) {
+    public func textViewDidBeginEditing(_ textView: UITextView) {
         firstResponder = textView
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textViewDidBeginEditing(_:))) {
             textViewsDelegate.textViewDidBeginEditing!(textView)
         }
         
     }
-    func textViewDidEndEditing(_ textView: UITextView) {
+    public func textViewDidEndEditing(_ textView: UITextView) {
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textViewDidEndEditing(_:))) {
             textViewsDelegate.textViewDidEndEditing!(textView)
         }
     }
-    func textViewDidChange(_ textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textViewDidChange(_:))) {
             textViewsDelegate.textViewDidChange!(textView)
         }
         
     }
-    func textViewDidChangeSelection(_ textView: UITextView) {
+    public func textViewDidChangeSelection(_ textView: UITextView) {
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textViewDidChangeSelection(_:))) {
             textViewsDelegate.textViewDidChangeSelection!(textView)
         }
     }
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textViewShouldEndEditing(_:))) {
             return textViewsDelegate.textViewShouldEndEditing!(textView)
         }
         return true
     }
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textViewShouldBeginEditing(_:))) {
             return textViewsDelegate.textViewShouldBeginEditing!(textView)
         }
         return true
     }
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if textViewsDelegate != nil && textViewsDelegate.responds(to: #selector(textView(_:shouldChangeTextIn:replacementText:))) {
             return   textViewsDelegate.textView!(textView, shouldChangeTextIn: range, replacementText: text)
         }
