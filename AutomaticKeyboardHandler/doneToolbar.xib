@@ -14,7 +14,6 @@
         <toolbar clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" id="2">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-            <color key="backgroundColor" red="0.67843137254901964" green="0.70980392156862748" blue="0.74117647058823533" alpha="1" colorSpace="calibratedRGB"/>
             <items>
                 <barButtonItem style="done" systemItem="done" id="5">
                     <inset key="imageInsets" minX="0.0" minY="0.0" maxX="-7" maxY="0.0"/>
@@ -36,7 +35,7 @@
                 </barButtonItem>
             </items>
             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-            <color key="barTintColor" red="0.67843137249999996" green="0.70980392160000005" blue="0.74117647060000003" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="barTintColor" red="0.78431372549019607" green="0.79607843137254897" blue="0.82745098039215681" alpha="1" colorSpace="calibratedRGB"/>
         </toolbar>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
