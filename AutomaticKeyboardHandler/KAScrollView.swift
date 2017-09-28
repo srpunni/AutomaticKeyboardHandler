@@ -160,7 +160,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     func enableKeypadHandler(showToolbar: Bool)  {
         if showToolbar {
             let bundle = Bundle(for: self.classForCoder)
-            doneToolBar = bundle.loadNibNamed("doneToolbar", owner: self, options: nil)?.first as! UIToolbar
+            doneToolBar = bundle.loadNibNamed("doneToolbar", owner: nil, options: nil)?.first as! UIToolbar
             
         }
         keypadGap = 50
