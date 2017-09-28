@@ -79,7 +79,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             objc_setAssociatedObject(self, &TextViewsDelegateKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    var topPadding:CGPoint! {
+   public var topPadding:CGPoint! {
         get {
             return objc_getAssociatedObject(self, &TopPaddingKey) as? CGPoint
         }
@@ -146,7 +146,9 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         nextField?.becomeFirstResponder()
     }
     
-    
+    @IBAction func doneAction(_ sender: Any) {
+        self.endEditing(true)
+    }
     /*--------------------------------------------------------------------------------------------------------------
      * Starting point
      *------------------------------------------------------------------------------------------------------------*/
@@ -158,7 +160,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     func enableKeypadHandler(showToolbar: Bool)  {
         if showToolbar {
             let bundle = Bundle(for: self.classForCoder)
-            doneToolBar = bundle.loadNibNamed("doneToolbar", owner: nil, options: nil)?.first as! UIToolbar
+            doneToolBar = bundle.loadNibNamed("doneToolbar", owner: self, options: nil)?.first as! UIToolbar
             
         }
         keypadGap = 50
