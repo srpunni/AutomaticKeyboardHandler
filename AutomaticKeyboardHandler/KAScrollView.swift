@@ -23,12 +23,13 @@ var TopPaddingKey: UInt8 = 8
 var ShowDoneToolbarKey: UInt8 = 9
 
 var KeyboardHeightKey: UInt8 = 10
+var FirstResponderKey: UInt8 = 11
+
 
 
 public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
 {
     
-    var firstResponder : UIResponder?
     
     
     /*--------------------------------------------------------------------------------------------------------------
@@ -43,6 +44,16 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             objc_setAssociatedObject(self, &KeyboardHeightKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
+    
+    var firstResponder:UIResponder? {
+        get {
+            return objc_getAssociatedObject(self, &FirstResponderKey) as? UIResponder
+        }
+        set {
+            objc_setAssociatedObject(self, &FirstResponderKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
     
     var doneToolBar:UIToolbar! {
         get {
@@ -79,7 +90,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             objc_setAssociatedObject(self, &TextViewsDelegateKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-   public var topPadding:CGPoint! {
+    public var topPadding:CGPoint! {
         get {
             return objc_getAssociatedObject(self, &TopPaddingKey) as? CGPoint
         }
@@ -164,27 +175,38 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             
         }
         keypadGap = 50
-        keyboardHeight = 260
+        keyboardHeight = 0
         scrollPoint = CGPoint(x: 0, y: 0)
         self.initialScrollPoint = self.contentOffset
         textFields = activeTextFields(parentView: self)
         let lastTextField = textFields.lastObject as? UITextField
         lastTextField?.returnKeyType = .done
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        // NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardDidChangeFrame, object: nil)
         
         
     }
-    
+    public override func layoutSubviews() {
+        
+    }
     /*--------------------------------------------------------------------------------------------------------------
      * Other utily methods
      *------------------------------------------------------------------------------------------------------------*/
+    
+    
     func callTextFieldSelector(selector : Selector, paramTextField: UITextField)
     {
+        
         if textFieldDelegate != nil && textFieldDelegate.responds(to: selector)
         {
             textFieldDelegate.perform(selector, with: paramTextField)
         }
+    }
+    
+    func currentFocussedTextInput() -> UITextInput?
+    {
+        let textInput = textFields.filtered(using: NSPredicate(format: "isFirstResponder=%d", NSNumber(value: true))).first
+        return textInput as? UITextInput
     }
     
     func nextField(currentTextField : UIResponder!) -> UIResponder?
@@ -298,6 +320,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             let textFieldY : Int  = Int(getY(view: fromTextField))
             calculatedY += keypadGap;
             let difference: Int = calculatedY - textFieldY;
+            print("DIFFERENCE =========  \(difference)")
             if(difference < 0)
             {
                 scrollPoint = CGPoint(x: Int(scrollPoint.x), y: -difference);
@@ -317,7 +340,16 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         let userInfo:NSDictionary = notification.userInfo! as NSDictionary
         let keyboardFrame:NSValue = userInfo.value(forKey: UIKeyboardFrameEndUserInfoKey) as! NSValue
         let keyboardRectangle = keyboardFrame.cgRectValue
-        keyboardHeight = Int(keyboardRectangle.height)
+        let newKeyboardHeight = Int(keyboardRectangle.height) + 25
+        if keyboardHeight != newKeyboardHeight {
+            keyboardHeight = Int(keyboardRectangle.height) + 25
+            if let textFied = firstResponder as? UITextField
+            {
+                moveToNext(fromTextField: textFied)
+            }
+        }
+        keyboardHeight = newKeyboardHeight
+        print("keyboardHeight ======= %d", keyboardHeight)
     }
     /*--------------------------------------------------------------------------------------------------------------
      * UITextFieldDelegate methods
@@ -355,6 +387,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
         let nextField = self.nextField(currentTextField: textField)
         nextField?.becomeFirstResponder()
         if nextField == nil {
