@@ -12,7 +12,7 @@ s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Sukhpal Singh' => 'srpunni@gmail.com' }
 s.source           = { :git => 'https://github.com/srpunni/AutomaticKeyboardHandler.git', :tag => s.version.to_s }
 
-s.ios.deployment_target = '10.0'
+s.ios.deployment_target = '8.0'
 s.source_files = 'AutomaticKeyboardHandler/**/*.swift'
 s.resources = "AutomaticKeyboardHandler/**/*.{png,jpeg,jpg,storyboard,xib}"
 
