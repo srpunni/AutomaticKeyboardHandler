@@ -10,164 +10,44 @@ import Foundation
 import UIKit
 import ObjectiveC
 
-var TextFieldsKey: UInt8 = 0
-var ScrollPointKey: UInt8 = 1
-var InitialScrollPointKey: UInt8 = 2
-var KeypadGapKey: UInt8 = 3
-var CurrentOrientationKey: UInt8 = 4
-
-var DoneToolBarKey: UInt8 = 5
-var DelegateKey: UInt8 = 6
-var TextViewsDelegateKey: UInt8 = 7
-var TopPaddingKey: UInt8 = 8
-var ShowDoneToolbarKey: UInt8 = 9
-
-var KeyboardHeightKey: UInt8 = 10
-var FirstResponderKey: UInt8 = 11
-
-
-
 public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
 {
     
     
     
     /*--------------------------------------------------------------------------------------------------------------
-     * Associated objects declaration
+     * Instance variables declaration
      *------------------------------------------------------------------------------------------------------------*/
     
-    var keyboardHeight:Int! {
-        get {
-            return objc_getAssociatedObject(self, &KeyboardHeightKey) as? Int
-        }
-        set {
-            objc_setAssociatedObject(self, &KeyboardHeightKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
+    var keyboardHeight:Int!
+    var firstResponder:UIResponder?
+    var doneToolBar:UIToolbar!
+    var showDoneToolbar:Bool!
+    var textFieldDelegate:UITextFieldDelegate!
+    var textViewsDelegate:UITextViewDelegate!
+    public var topPadding:CGPoint!
+    var textFields:NSMutableArray!
+    var scrollPoint:CGPoint!
+    var initialScrollPoint:CGPoint!
+    var keypadGap:Int!
+    var currentOrientation:CGPoint!
     
-    var firstResponder:UIResponder? {
-        get {
-            return objc_getAssociatedObject(self, &FirstResponderKey) as? UIResponder
-        }
-        set {
-            objc_setAssociatedObject(self, &FirstResponderKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    
-    var doneToolBar:UIToolbar! {
-        get {
-            return objc_getAssociatedObject(self, &DoneToolBarKey) as? UIToolbar
-        }
-        set {
-            objc_setAssociatedObject(self, &DoneToolBarKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var showDoneToolbar:Bool! {
-        get {
-            return objc_getAssociatedObject(self, &ShowDoneToolbarKey) as? Bool
-        }
-        set {
-            objc_setAssociatedObject(self, &ShowDoneToolbarKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var textFieldDelegate:UITextFieldDelegate! {
-        get {
-            return objc_getAssociatedObject(self, &DelegateKey) as? UITextFieldDelegate
-        }
-        set {
-            objc_setAssociatedObject(self, &DelegateKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var textViewsDelegate:UITextViewDelegate! {
-        get {
-            return objc_getAssociatedObject(self, &TextViewsDelegateKey) as? UITextViewDelegate
-        }
-        set {
-            objc_setAssociatedObject(self, &TextViewsDelegateKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    public var topPadding:CGPoint! {
-        get {
-            return objc_getAssociatedObject(self, &TopPaddingKey) as? CGPoint
-        }
-        set {
-            objc_setAssociatedObject(self, &TopPaddingKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    
-    
-    var textFields:NSMutableArray! {
-        get {
-            return objc_getAssociatedObject(self, &TextFieldsKey) as? NSMutableArray
-        }
-        set {
-            objc_setAssociatedObject(self, &TextFieldsKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var scrollPoint:CGPoint! {
-        get {
-            return objc_getAssociatedObject(self, &ScrollPointKey) as? CGPoint
-        }
-        set {
-            objc_setAssociatedObject(self, &ScrollPointKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var initialScrollPoint:CGPoint! {
-        get {
-            return objc_getAssociatedObject(self, &InitialScrollPointKey) as? CGPoint
-        }
-        set {
-            objc_setAssociatedObject(self, &InitialScrollPointKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var keypadGap:Int! {
-        get {
-            return objc_getAssociatedObject(self, &KeypadGapKey) as? Int
-        }
-        set {
-            objc_setAssociatedObject(self, &KeypadGapKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    var currentOrientation:CGPoint! {
-        get {
-            return objc_getAssociatedObject(self, &CurrentOrientationKey) as? CGPoint
-        }
-        set {
-            objc_setAssociatedObject(self, &CurrentOrientationKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    @IBAction func prevAction(_ sender: Any) {
-        
-        let prevField =  self.prevField(currentTextField: firstResponder)
-        prevField?.becomeFirstResponder()
-    }
-    
-    @IBAction func nextAction(_ sender: Any) {
-        let nextField =  self.nextField(currentTextField: firstResponder)
-        nextField?.becomeFirstResponder()
-    }
-    
-    @IBAction func doneAction(_ sender: Any) {
-        self.endEditing(true)
-    }
     /*--------------------------------------------------------------------------------------------------------------
-     * Starting point
+     * Intialisation and configuration for automatic keyboard handling
      *------------------------------------------------------------------------------------------------------------*/
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    public override func awakeFromNib() {
         self.enableKeypadHandler(showToolbar: true)
     }
+    
+    public override func layoutSubviews() {
+        
+    }
+    
     func enableKeypadHandler(showToolbar: Bool)  {
         if showToolbar {
             let bundle = Bundle(for: self.classForCoder)
@@ -181,32 +61,134 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         textFields = activeTextFields(parentView: self)
         let lastTextField = textFields.lastObject as? UITextField
         lastTextField?.returnKeyType = .done
-        // NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide), name: .UIKeyboardDidHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardDidChangeFrame, object: nil)
         
-        
+        self.keyboardDismissMode = .onDrag
     }
-    public override func layoutSubviews() {
-        
-    }
+    
+    //MARK: IBAction
     /*--------------------------------------------------------------------------------------------------------------
-     * Other utily methods
+     * IBActions
      *------------------------------------------------------------------------------------------------------------*/
     
-    
-    func callTextFieldSelector(selector : Selector, paramTextField: UITextField)
-    {
+    @IBAction func prevAction(_ sender: Any) {
         
-        if textFieldDelegate != nil && textFieldDelegate.responds(to: selector)
-        {
-            textFieldDelegate.perform(selector, with: paramTextField)
+        let prevField =  self.prevField(currentTextField: firstResponder)
+        prevField?.becomeFirstResponder()
+    }
+    
+    @IBAction func nextAction(_ sender: Any) {
+        let nextField =  self.nextField(currentTextField: firstResponder)
+        nextField?.becomeFirstResponder()
+        if nextField == nil {
+            reset()
         }
     }
     
-    func currentFocussedTextInput() -> UITextInput?
+    @IBAction func doneAction(_ sender: Any) {
+        reset()
+    }
+    
+    /*--------------------------------------------------------------------------------------------------------------
+     * Other utily methods
+     *------------------------------------------------------------------------------------------------------------*/
+    func activeTextFields(parentView : UIView!) -> NSMutableArray
     {
-        let textInput = textFields.filtered(using: NSPredicate(format: "isFirstResponder=%d", NSNumber(value: true))).first
-        return textInput as? UITextInput
+        let array = NSMutableArray()
+        if (parentView.subviews.count > 0) {
+            for  view in parentView.subviews {
+                
+                if(!view.isHidden && view.isUserInteractionEnabled )
+                {
+                    if view is UITextInput
+                    {
+                        array.add(view)
+                        if let textField : UITextField = view as? UITextField
+                        {
+                            textField.returnKeyType = .next
+                            textField.inputAccessoryView = doneToolBar
+                            if  textField.delegate != nil
+                            {
+                                textFieldDelegate = textField.delegate
+                                
+                            }
+                            textField.delegate = self
+                        }
+                        else if let textView : UITextView = view as? UITextView
+                        {
+                            textView.returnKeyType = .next
+                            textView.inputAccessoryView = doneToolBar
+                            if  textView.delegate != nil
+                            {
+                                textViewsDelegate = textView.delegate
+                                
+                            }
+                            textView.delegate = self
+                        }
+                        
+                    }
+                    else if view.isKind(of: UIView.self)
+                    {
+                        array.addObjects(from: (activeTextFields(parentView: view) as NSArray) as! [Any])
+                    }
+                }
+                
+                
+            }
+        }
+        sortWithY(array: array)
+        return array;
+        
+    }
+    
+    func sortWithY(array : NSMutableArray)
+    {
+        array.sort(comparator: { (object1, object2) -> ComparisonResult in
+            let view1 = object1 as! UIView
+            let view2 = object2 as! UIView
+            var result : ComparisonResult = .orderedSame
+            if calculateY(view: view1) < calculateY(view: view2) || (calculateY(view: view1) == calculateY(view: view2) && calculateX(view:view1) < calculateX(view:view2))
+            {
+                result = .orderedAscending
+            }
+            else
+            {
+                result = .orderedDescending
+            }
+            return result
+        })
+    }
+    
+    func reset()
+    {
+        self.setContentOffset(initialScrollPoint, animated: true)
+        firstResponder?.resignFirstResponder()
+        firstResponder = nil
+    }
+    
+    func calculateY(view: UIView!) -> CGFloat
+    {
+        if view == nil {
+            return 0
+        }
+        if(view.superview?.isKind(of: UIScrollView.self))!
+        {
+            return view.frame.origin.y;
+        }
+        return view.frame.origin.y + calculateY(view:view.superview)
+    }
+    
+    func calculateX(view: UIView!) -> CGFloat
+    {
+        if view == nil {
+            return 0
+        }
+        if(view.superview?.isKind(of: UIScrollView.self))!
+        {
+            return view.frame.origin.x;
+        }
+        return view.frame.origin.x + calculateX(view:view.superview)
     }
     
     func nextField(currentTextField : UIResponder!) -> UIResponder?
@@ -240,84 +222,18 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         
         
     }
-    
-    func activeTextFields(parentView : UIView!) -> NSMutableArray
+    func scrollToShow(textField: UITextField!)
     {
-        let array = NSMutableArray()
-        if (parentView.subviews.count > 0) {
-            for  view in parentView.subviews {
-                
-                if(!view.isHidden && view.isUserInteractionEnabled )
-                {
-                    if view is UITextInput
-                    {
-                        array.add(view)
-                        if let textField : UITextField = view as? UITextField
-                        {
-                            textField.returnKeyType = .next
-                            textField.inputAccessoryView = doneToolBar
-                            textFieldDelegate = textField.delegate
-                            textField.delegate = self
-                        }
-                        else if let textView : UITextView = view as? UITextView
-                        {
-                            textView.returnKeyType = .next
-                            textView.inputAccessoryView = doneToolBar
-                            textViewsDelegate = textView.delegate
-                            textView.delegate = self
-                        }
-                        
-                    }
-                    else if view.isKind(of: UIView.self)
-                    {
-                        array.addObjects(from: (activeTextFields(parentView: view) as NSArray) as! [Any])
-                    }
-                }
-                
-                
-            }
-        }
-        array.sort(comparator: { (object1, object2) -> ComparisonResult in
-            let view1 = object1 as! UIView
-            let view2 = object2 as! UIView
-            var result : ComparisonResult = .orderedSame
-            if getY(view: view1) < getY(view: view2) || (getY(view: view1) == getY(view: view2) && view1.frame.origin.x < view2.frame.origin.x)
-            {
-                result = .orderedAscending
-            }
-            else
-            {
-                result = .orderedDescending
-            }
-            return result
-        })
-        return array;
-        
-    }
-    
-    func getY(view: UIView!) -> CGFloat
-    {
-        if view == nil {
-            return 0
-        }
-        if(view.superview?.isKind(of: UIScrollView.self))!
-        {
-            return view.frame.origin.y;
-        }
-        return view.frame.origin.y + getY(view:view.superview)
-    }
-    func moveToNext(fromTextField: UITextField!)
-    {
-        if fromTextField == nil  {
+        if textField == nil  {
             self.setContentOffset(initialScrollPoint, animated: true)
             
         }
         else
         {
-            let textFieldHeight : Int = Int(fromTextField.frame.size.height) + keypadGap;
+            let textFieldHeight : Int = Int(textField.frame.size.height) + keypadGap;
             var calculatedY : Int = Int(self.frame.size.height) - (keyboardHeight + textFieldHeight);
             
-            let textFieldY : Int  = Int(getY(view: fromTextField))
+            let textFieldY : Int  = Int(calculateY(view: textField))
             calculatedY += keypadGap;
             let difference: Int = calculatedY - textFieldY;
             print("DIFFERENCE =========  \(difference)")
@@ -335,7 +251,11 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         }
         
     }
-    
+    func keyboardDidHide()
+    {
+        firstResponder?.resignFirstResponder()
+        firstResponder = nil
+    }
     func keyboardWillShow(notification:NSNotification) {
         let userInfo:NSDictionary = notification.userInfo! as NSDictionary
         let keyboardFrame:NSValue = userInfo.value(forKey: UIKeyboardFrameEndUserInfoKey) as! NSValue
@@ -345,12 +265,13 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             keyboardHeight = Int(keyboardRectangle.height) + 25
             if let textFied = firstResponder as? UITextField
             {
-                moveToNext(fromTextField: textFied)
+                scrollToShow(textField: textFied)
             }
         }
         keyboardHeight = newKeyboardHeight
-        print("keyboardHeight ======= %d", keyboardHeight)
     }
+    
+    
     /*--------------------------------------------------------------------------------------------------------------
      * UITextFieldDelegate methods
      *------------------------------------------------------------------------------------------------------------*/
@@ -363,9 +284,9 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     }
     
     public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        moveToNext(fromTextField: textField)
+        scrollToShow(textField: textField)
         if textFieldDelegate != nil {
-            if textFieldDelegate.responds(to: Selector(("textFieldShouldBeginEditing")))
+            if textFieldDelegate.responds(to: #selector(textFieldShouldBeginEditing(_:)))
             {
                 return textFieldDelegate.textFieldShouldBeginEditing!(textField)
             }
@@ -375,12 +296,18 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         firstResponder = textField
+        if textFieldDelegate != nil {
+            if textFieldDelegate.responds(to: #selector(textFieldDidBeginEditing(_:)))
+            {
+                return textFieldDelegate.textFieldDidBeginEditing!(textField)
+            }
+        }
     }
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         if textFieldDelegate != nil {
-            if textFieldDelegate.responds(to: Selector(("textFieldShouldEndEditing")))
+            if textFieldDelegate.responds(to: #selector(textFieldShouldEndEditing(_:)))
             {
-                return textFieldDelegate.textFieldShouldBeginEditing!(textField)
+                return textFieldDelegate.textFieldShouldEndEditing!(textField)
             }
         }
         return true
@@ -398,7 +325,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             //  enableKeypadHandler(showToolbar: true)
         }
         if textFieldDelegate != nil {
-            if textFieldDelegate.responds(to:  #selector(textFieldShouldReturn) )
+            if textFieldDelegate.responds(to:  #selector(textFieldShouldReturn(_:)) )
             {
                 return textFieldDelegate.textFieldShouldReturn!(textField)
             }
@@ -417,6 +344,9 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         }
         return true
     }
+    
+   
+    @available(iOS 10.0, *)
     public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
         if textFieldDelegate != nil && textFieldDelegate.responds(to: #selector(textFieldDidEndEditing(_:reason:))) {
             textFieldDelegate.textFieldDidEndEditing!(textField, reason: reason)
@@ -482,3 +412,4 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     //    }
     
 }
+
