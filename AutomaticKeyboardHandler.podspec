@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'AutomaticKeyboardHandler'
-s.version          = '1.0.8'
+s.version          = '1.0.9'
 s.summary          = 'By far the most fantastic view I have seen in my entire life. No joke.'
 
 s.description      = <<-DESC
