@@ -45,7 +45,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
     }
     
     public override func layoutSubviews() {
-        
+        super.layoutSubviews()
     }
     
     func enableKeypadHandler(showToolbar: Bool)  {
