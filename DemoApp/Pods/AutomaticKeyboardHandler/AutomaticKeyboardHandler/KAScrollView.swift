@@ -345,7 +345,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         return true
     }
     
-    
+   
     @available(iOS 10.0, *)
     public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
         if textFieldDelegate != nil && textFieldDelegate.responds(to: #selector(textFieldDidEndEditing(_:reason:))) {
