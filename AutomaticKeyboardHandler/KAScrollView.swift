@@ -52,7 +52,9 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
         if showToolbar {
             let bundle = Bundle(for: self.classForCoder)
             doneToolBar = bundle.loadNibNamed("doneToolbar", owner: nil, options: nil)?.first as! UIToolbar
-            
+            doneToolBar.isTranslucent = false
+            doneToolBar.barTintColor = UIColor(red: 200/255.0, green: 203/255.0, blue: 211/255.0, alpha: 1.0)
+            doneToolBar.sizeToFit()
         }
         keypadGap = 50
         keyboardHeight = 0
