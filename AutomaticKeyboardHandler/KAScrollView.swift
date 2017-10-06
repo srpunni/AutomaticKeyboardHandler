@@ -215,7 +215,7 @@ public class KAScrollView: UIScrollView, UITextViewDelegate, UITextFieldDelegate
             return textFields.firstObject as? UIResponder
         }
         let index = textFields.index(of: currentTextField)
-        if index - 1 < textFields.count
+        if index - 1 < textFields.count && index > 0
         {
             return textFields.object(at: index - 1) as? UIResponder
             
