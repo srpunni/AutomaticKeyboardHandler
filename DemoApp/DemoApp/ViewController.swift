@@ -20,6 +20,10 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    func tokenize(string : String)
+    {
+        let chars : CharacterView = string.characters
+        for 
+    }
 }
 
