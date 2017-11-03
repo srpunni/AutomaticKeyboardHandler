@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'C10A24B196838620017203638CA9B6E2'
+               BlueprintIdentifier = '4C193D3745A6690F6082DEB91329B73E'
                BlueprintName = 'AutomaticKeyboardHandler'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'AutomaticKeyboardHandler.framework'>
