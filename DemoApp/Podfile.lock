@@ -1,11 +1,11 @@
 PODS:
-  - AutomaticKeyboardHandler (2.0.0)
+  - AutomaticKeyboardHandler (2.0.2)
 
 DEPENDENCIES:
   - AutomaticKeyboardHandler
 
 SPEC CHECKSUMS:
-  AutomaticKeyboardHandler: 4029093a8df98fe3d65abab9687939e9ec5cf50e
+  AutomaticKeyboardHandler: 5a1a8229042159dffa964fdd760e57fa31653302
 
 PODFILE CHECKSUM: 4f7d7d5ef6dd9d56d7c7a035065dd23fb4f99fda
 
